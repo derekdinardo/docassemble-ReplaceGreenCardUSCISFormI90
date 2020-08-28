@@ -1,0 +1,321 @@
+objects:
+  - client: Individual
+---
+question: Screening
+  Proceedings Screening questions
+fields:
+  - Have you ever been in exclusion, deportation, or removal proceedings?: client.d1
+  - Have you ever been detained by any immigration officials, such as ICE, INS, USCIS, or DHS?: client.d2
+  - Have you been detained by immigration officials when traveling to the United States?: client.d3
+  - Have you been detained by border patrol?: client.d4
+  - Have you been before an immigration judge?: client.d5
+---
+question: Abandonment Screening
+  Abandonment of Status Questions
+fields:
+  - Have you ever abandoned your status: client.a1
+  - Have you ever moved to another country since becoming a permanent resident?: client.a2
+  - Have you ever had a foreign mailing address or foreign permanent address since becoming a permanent resident?: client.a3
+  - Have you lived outside the United States since becoming a permanent resident?: client.a4
+  - Have you considered any country other than the United States your permanent residence?: client.a5
+---
+question: Name
+  What is your legal name?
+fields:
+  - First Name: client.name.first
+  - Middle Name: client.name.middle
+    required: false
+  - Last Name: client.name.last
+  - Suffix: client.name.suffix
+    required: false
+---
+question: DOB
+  What is your date of birth?
+fields:
+   - no label: client.birthdate
+     datatype: date  
+---
+question: soc
+  What is your social security number?
+fields: 
+  - no label: client.ssn
+---
+id: address
+question: |
+  What is your current address?
+fields:
+  - address: client.address.address
+    address autocomplete: True
+  - unit: client.address.unit
+    required: False
+  - city: client.address.city
+  - state: client.address.state
+    code: |
+      states_list()
+    default: "MA"
+  - zip: client.address.zip
+  - county: client.address.county
+    required: False
+  - Phone number: client.phone_number
+    required: False
+  - Email address: client.email
+    datatype: email
+    required: False
+  - A Number: client.anumber
+---
+field: client.name_change
+Question: |
+  Has your name legally changed since the issuance of your permanent resident card?
+choices:
+  - Yes: Yes
+  - No: No
+  - N/A - I never received my previous card: NA
+---
+Question: |
+  What is your new legal name?  
+fields:
+  - First: client.name.new_first
+  - Middle: client.name.new_middle
+    required: false
+  - Last: client.name.new_last
+  - Suffix: client.name.new_suffix
+---
+question: |
+  What is ${ client.possessive('gender') }?
+field: client.gender
+choices:
+  - Male: male
+  - Female: female
+  - Other: other
+---
+question: |
+  Where were you born?
+fields: 
+  - Country: client.birth_country
+  - City/Town/Village: client.birth_city
+---
+question: |
+  What were your parents given (first) names?
+fields:
+  - "Mother's First Name:": client.mother_name
+  - "Father's First Name:": client.father_name
+---
+question: |
+  Are you requesting an accommodation because of your disabilities and/or impairments?
+fields:
+  - Are you requesting an accommodation for any disabilities and/or impairments?: client.requesting_accommodation
+    datatype: yesno
+  - Deaf/Hard of hearing: client.hearing_accommodation
+  - Blind/Low vision: client.low_vision
+  - Other: client.other_disability
+---
+question: |
+  Now we are going to gather some information about your green card.
+fields:
+  - What was your class of admission?: client.admission_category
+  - When were you admitted to the United States?: client.admission_date
+    datatype: date
+  - When does your green card expire?: client.admission_expiration
+    datatype: date
+  - Was your green card interview in the United States: client.Adjust_or_Consular
+    choices:
+      - Inside the United States (Adjustment of Status): Adjust
+      - Outside the United States (Consular Processing): Consular
+---
+question: |
+  What is ${ client.possessive('reason for replacing green card') }?
+field: client.replace_reason
+choices:
+  - My green card has been lost, stolen, or destroyed: 2a
+  - I never received my green card: 2b
+  - My green card has been damaged or mutilated: 2c
+  - My green card has incorrect information because of DHS error: 2d
+  - My name or other biographic information has been legally changed since I received my greencard: 2e
+  - My existing green card has already expired or will expire within 6 months: 2f
+  - I have reached my 14th birthday: 2g
+  - I am taking up commuter status: 2h1
+  - I am a commuter taking up residence in the US: 2h2
+  - I have automatically converted to lawful permanent resident status: 2i
+  - I have a prior edition of the Alien Registration Card or am applying to replace for another reason: 2j  
+---
+question: |
+  Now we are going to ask your some demographic questions.
+fields:
+  - Are you Hispanic or Latino?: client.latino
+    datatype: yesno
+  - What race(s) do you identify as?: client.races
+    datatype: checkboxes
+    choices:
+      - White: White
+      - Asian: Asian
+      - Black or African American: Black
+      - American Indian or Alaska Native: Indian
+      - Native Hawaiian or Other Pacific Islander: Hawaiian
+    none of the above: false
+  - What is your height?: client.height
+  - What is your weight?: client.weight
+    datatype: integer
+  - What is your eye color?: client.eye_color
+    choices:
+      - Black: Black
+      - Blue: Blue
+      - Brown: Brown
+      - Gray: Gray
+      - Green: Green
+      - Hazel: Hazel
+      - Maroon: Maroon
+      - Pink: Pink
+      - Unknown/Other: Unknown
+  - What is your hair color?: client.hair_color
+    choices:
+      - Bald: Bald
+      - Black: Black
+      - Blond: Blond
+      - Brown: Brown
+      - Gray: Gray
+      - Red: Red
+      - Sandy: Sandy
+      - White: White
+      - Unknown/Other: Unknown
+---
+if: |
+  (client.Adjust_or_Consular == 'Adjust')
+question: |
+  Now to gather some information when you became a permanent resident
+fields:
+  - Where did you apply for residence?: client.application_city
+  - Where was your residence issued?: client.residence_issued
+---
+if: |
+  (client.Adjust_or_Consular == 'Consular')
+question: |
+  Now to gather some information when you became a permanent resident
+fields:
+  - Where did you apply for residence?: client.application_city
+  - Where was your residence issued?: client.residence_issued
+  - What was your destination in the United States when you admitted?: client.admittance_destination
+  - What was your port of entry in the United States when admitted?: client.portofentry
+---
+question: |
+  Here is your PDF form
+attachment:
+  name: A filled-in form
+  filename: filled-form
+  pdf template file: DocassembleI90.pdf
+  fields:
+    - Anumber: |
+        ${ client.anumber }
+    - ClientLastName: |
+        ${ client.name.last }
+    - ClientFirstName: |
+        ${ client.name.first }
+    - ClientMiddleName: |
+        ${ client.name.middle }
+    - ClientNameChangeYes: |
+        ${ client.name_change == "Yes" }
+    - ClientNameChangeNo: |
+        ${ client.name_change == "No" }
+    - ClientNameChangeNA: |
+        ${ client.name_change == "NA" }
+    - ClientNewLastName: |
+        % if client.name_change == "Yes":
+        ${ client.name.new_last }
+        % endif
+    - ClientNewFirstName: |
+        % if client.name_change == "Yes":
+        ${ client.name.new_first }
+        % endif
+    - ClientNewMiddleName: |
+        % if client.name_change == "Yes":
+        ${ client.name.new_middle }
+        % endif
+    - ClientDateofBirth: |
+        ${ client.birthdate }
+    - ClientCityofBirth: |
+        ${ client.birth_city }
+    - ClientCountryofBirth: |
+        ${ client.birth_country }
+    - ClientSSN: |
+        ${ client.ssn }
+    - ClientDateofAdmission: |
+        ${ client.admission_date }
+    - ClientClassofAdmission: |
+        ${ client.admission_category }
+    - ClientMotherFirstName: |
+        ${ client.mother_name }
+    - ClientFatherFirstName: |
+        ${ client.father_name }        
+    - ClientIsLatino: |
+        ${ client.latino }
+    - ClientIsNotLatino: |
+        ${ not (client.latino) }        
+    - ClientIsWhite: |
+        ${ client.races.all_true('White') }
+    - ClientIsBlack: |
+        ${ client.races.all_true('Black') }
+    - ClientIsAsian: |
+        ${ client.races.all_true('Asian') }
+    - ClientIsAmericanIndian: |
+        ${ client.races.all_true('Indian') }
+    - ClientIsNativeHawaiian: |
+        ${ client.races.all_true('Hawaiian') }
+    - ClientEyesAreBlack: |
+        ${ client.eye_color == "Black" }
+    - ClientEyesAreBlue: |
+        ${ client.eye_color == "Blue" }
+    - ClientEyesAreBrown: |
+        ${ client.eye_color == "Brown" }
+    - ClientEyesAreGray: |
+        ${ client.eye_color == "Gray" }
+    - ClientEyesAreGreen: |
+        ${ client.eye_color == "Green" }
+    - ClientEyesAreHazel: |
+        ${ client.eye_color == "Hazel" }
+    - ClientEyesAreMaroon: |
+        ${ client.eye_color == "Maroon" }
+    - ClientEyesArePink: |
+        ${ client.eye_color == "Pink" }
+    - ClientEyesAreUnknown: |
+        ${ client.eye_color == "Unknown" }
+    - ClientHairIsBald: |
+        ${ client.hair_color == "Bald" }
+    - ClientHairIsBald: |
+        ${ client.hair_color == "Black" }
+    - ClientHairIsBlond: |
+        ${ client.hair_color == "Blond" }
+    - ClientHairIsBrown: |
+        ${ client.hair_color == "Brown" }
+    - ClientHairIsGray: |
+        ${ client.hair_color == "Gray" }
+    - ClientHairIsRed: |
+        ${ client.hair_color == "Red" }
+    - ClientHairIsSandy: |
+        ${ client.hair_color == "Sandy" }
+    - ClientHairIsWhite: |
+        ${ client.hair_color == "White" }
+    - ClientHairIsUnknown: |
+        ${ client.hair_color == "Unknown" }
+    - ClientWeightHundreds: |
+        ${ (client.weight - (client.weight % 100)) }
+    - ClientWeightTens: |
+        ${ (client.weight - (client.weight % 10)) % 100 }
+    - ClientWeightOnes: |
+        ${ (client.weight % 10) }
+    - ClientIsRequestingAccommodation: |
+        ${ client.requesting_accommodation }
+    - ClientIsNotRequestingAccomodation: |
+        ${ not (client.requesting_accommodation) }
+    - AdjustmentorVisaApplicationLocation: |
+        ${ client.application_city }
+    - AdjustmentorVisaGrantingLocation: |
+        ${ client.residence_issued }
+    - VisaPortofEntry: |
+        % if (client.Adjust_or_Consular == "Consular"):
+        ${ client.portofentry }
+        % endif
+    - VisaDestination: |
+        % if (client.Adjust_or_Consular == "Consular"):
+        ${ client.admittance_destination }
+        % endif
+mandatory: True
+---
